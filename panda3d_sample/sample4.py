@@ -27,10 +27,10 @@ class MyGame(ShowBase):
 
         #cube2オブジェクトを生成する
         self.cube2 = self.loader.loadModel("models/misc/rgbCube") #バス
-        self.cube2.reparentTo(self.render) #描画
-        self.cube2.setScale(1,1,1)         #大きさ
-        self.cube2.setPos(0,0,0)           #位置
-        self.cube2.setHpr(0,0,0)           #向き
+        self.cube2.reparentTo(self.render)        #描画
+        self.cube2.setScale(1,1,1)                #大きさ
+        self.cube2.setPos(0,0,0)                  #位置
+        self.cube2.setHpr(0,0,0)                  #向き
 
         #衝突検出オブジェクトcol2を3Dオブジェクトcube2に追加する
         c = CollisionNode('col2')                 #名前

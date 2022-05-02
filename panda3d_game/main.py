@@ -48,17 +48,45 @@ class BallInMazeDemo(ShowBase):
                          fg=(1,1,1,1),pos=(0.1,-0.15),scale=.06,font=font,
                          shadow=(0,0,0,0.5))
         #迷路オブジェクトの設定
+        self.maze  =  loader.loadModel("models/maze")
+        self.maze.reparentTo(render)
+        #迷路の壁の衝突検出マスク
+        self.walls  =  self.maze.find("**/wall_collide")
+        self.walls.node().setIntoCollideMask(BitMask32.bit(0))
+        #迷路の地面の衝突検出用マスク
+        self.mazeGround = self.maze.find("**/ground_collide")
+        self.mazeGround.node().setIntoCollideMask(BitMask32.bit(1))
+        #迷路のの穴の衝突検出用マスク
+        self.loseTriggers = []
+        for i in range(6):
+            trigger = self.maze.find("**/hole_collide" + str(i))
+            trigger.node().setIntoCollideMask(BitMask32.bit(0))
+            trigger.node().setName("loseTrigger")
+            self.loseTriggers.append(trigger)
         #ボールオブジェクトの設定
         #ゴールオブジェクトの設定
         #ライトの設定
         #start関数の呼び出し
+        self.start()
     #start関数の定義
+    def start(self):
         #ボールの初期位置の設定
         #rollTask関数の呼び出し
+        taskMgr.remove("rollTask")
+        self.mainLoop = taskMgr.add(self.rollTask,"rollTask")
     #rollTask関数の定義
+    def rollTask(self,task):
+        dt  =  globalClock.getDt()
+        if dt > .2:
+            return task.cont
         #ボールが衝突したときの処理の分岐
         #ボールの速度や向きの計算
         #迷路の傾きのマウス操作
+        if base.mouseWatcherNode.hasMouse():
+            mpos = base.mouseWatcherNode.getMouse()
+            self.maze.setP(mpos.getY() * -10)
+            self.maze.setR(mpos.getX() * 10)
+        return task.cont
     #groundCollideHandler関数の定義
     #wallCollideHandler関数の定義
     #loseGame関数の定義
